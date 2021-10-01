@@ -84,6 +84,7 @@ class LibreLensGUI(QMainWindow):
             # print(f"Lens file contains: {self.lenses}")
 
         QWidget().setLayout(self.central_widget.layout())
+        newwidget = QWidget()
         newlayout = QVBoxLayout(self.central_widget)
         # Make a section for each group of lenses:
         for group in self.lenses:
@@ -103,9 +104,11 @@ class LibreLensGUI(QMainWindow):
 
                 newlayout.addLayout(buttonrow)
 
-        self.central_widget.setLayout(newlayout)
-        # scroll_area = QScrollArea()
-        # scroll_area.setWidget(self.central_widget)
+        newwidget.setLayout(newlayout)
+        scroll_area = QScrollArea()
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setWidget(newwidget)
+        self.setCentralWidget(scroll_area)
 
     def load_definition_file(self):
         """
