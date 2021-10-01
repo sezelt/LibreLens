@@ -91,14 +91,23 @@ class LibreLensGUI(QMainWindow):
 
             for lens in group['lenses']:
                 # print(f"Adding lens {lens['name']}")
+
+                # an ID for the current lens that gets attached
+                # to the buttons so they can be dispatched later
+                lenspath = f"{group['name']}/{lens['name']}"
+
                 buttonrow = QHBoxLayout()
 
                 buttonrow.addWidget(QLabel(lens['name']))
 
                 to_scope_button = QPushButton("<---")
+                to_scope_button.clicked.connect(self.single_lens_to_scope_pressed)
+                to_scope_button.setObjectName(lenspath+"/TOSCOPE")
                 buttonrow.addWidget(to_scope_button)
 
                 to_register_button = QPushButton("--->")
+                to_register_button.clicked.connect(self.single_lens_to_register_pressed)
+                to_register_button.setObjectName(lenspath+"/TOREGISTER")
                 buttonrow.addWidget(to_register_button)
 
                 newlayout.addLayout(buttonrow)
@@ -108,6 +117,14 @@ class LibreLensGUI(QMainWindow):
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll_area.setWidget(newwidget)
         self.setCentralWidget(scroll_area)
+
+    def single_lens_to_scope_pressed(self):
+        sender = self.sender().objectName()
+        print(f"Single lens to scope pressed: {sender}")
+
+    def single_lens_to_register_pressed(self):
+        sender = self.sender().objectName()
+        print(f"Single lens to register pressed: {sender}")
 
     def load_definition_file(self):
         """
