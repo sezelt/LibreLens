@@ -39,8 +39,7 @@ class LibreLensGUI(QMainWindow):
         # TODO: check if there is a file in argv, open directly to that file
 
         self.setup_window()
-        self.central_widget = QWidget()
-        self.central_widget.setLayout(QVBoxLayout())
+        self.central_widget = QLabel("Please load a lens definition file...")
         self.setCentralWidget(self.central_widget)
         self.show()
 
@@ -94,7 +93,7 @@ class LibreLensGUI(QMainWindow):
         # buttons for the overall control
         controlrow = QHBoxLayout()
 
-        all_to_scope_button = QPushButton("<--- All To Scope")
+        all_to_scope_button = QPushButton("⬅︎ All To Scope")
         all_to_scope_button.clicked.connect(self.all_to_scope_pressed)
         controlrow.addWidget(all_to_scope_button)
 
@@ -106,7 +105,7 @@ class LibreLensGUI(QMainWindow):
         seletcted_to_register_button.clicked.connect(self.selected_to_register_pressed)
         controlrow.addWidget(seletcted_to_register_button)
 
-        all_to_register_button = QPushButton("All To Register --->")
+        all_to_register_button = QPushButton("All To Register ➡︎")
         all_to_register_button.clicked.connect(self.all_to_register_pressed)
         controlrow.addWidget(all_to_register_button)
 
@@ -141,12 +140,12 @@ class LibreLensGUI(QMainWindow):
 
                 buttonrow.addWidget(QLabel(lens['name']))
 
-                to_scope_button = QPushButton("<---")
+                to_scope_button = QPushButton("⬅︎")
                 to_scope_button.clicked.connect(self.single_lens_to_scope_pressed)
                 to_scope_button.setObjectName(lenspath+"/TOSCOPE")
                 buttonrow.addWidget(to_scope_button)
 
-                to_register_button = QPushButton("--->")
+                to_register_button = QPushButton("➡︎")
                 to_register_button.clicked.connect(self.single_lens_to_register_pressed)
                 to_register_button.setObjectName(lenspath+"/TOREGISTER")
                 buttonrow.addWidget(to_register_button)
