@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QWidget
 from PyQt5.QtWidgets import QMenu, QAction, QFileDialog, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QFrame, QPushButton, QScrollArea, QCheckBox
-from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QLineEdit, QGroupBox, QRadioButton
 
 # import numpy as np
 import sys
@@ -89,26 +89,42 @@ class LibreLensGUI(QMainWindow):
         # newlayout.setSpacing(0)
         # newlayout.setContentsMargins(11, 0, 11, 0)
 
+        controlarea = QVBoxLayout()
+
         # buttons for the overall control
         controlrow = QHBoxLayout()
 
-        all_to_scope_button = QPushButton("<--- All")
+        all_to_scope_button = QPushButton("<--- All To Scope")
         all_to_scope_button.clicked.connect(self.all_to_scope_pressed)
         controlrow.addWidget(all_to_scope_button)
 
-        selected_to_scope_button = QPushButton("<--- Selected")
+        selected_to_scope_button = QPushButton("Selected To Scope")
         selected_to_scope_button.clicked.connect(self.selected_to_scope_pressed)
         controlrow.addWidget(selected_to_scope_button)
 
-        seletcted_to_register_button = QPushButton(" Selected --->")
+        seletcted_to_register_button = QPushButton(" Selected To Register")
         seletcted_to_register_button.clicked.connect(self.selected_to_register_pressed)
         controlrow.addWidget(seletcted_to_register_button)
 
-        all_to_register_button = QPushButton("All --->")
+        all_to_register_button = QPushButton("All To Register --->")
         all_to_register_button.clicked.connect(self.all_to_register_pressed)
         controlrow.addWidget(all_to_register_button)
 
-        newlayout.addLayout(controlrow)
+        controlarea.addLayout(controlrow)
+
+        registerrow = QHBoxLayout()
+        registerrow.addWidget(QLabel("Register:"))
+        n_registers = len(self.lenses[0]['lenses'][0]['registers'])
+        for i in range(n_registers):
+            radio = QRadioButton(f"{i+1}")
+            registerrow.addWidget(radio)
+            if i == 0:
+                radio.setChecked(True)
+
+        controlarea.addLayout(registerrow)
+
+
+        newlayout.addLayout(controlarea)
 
         # Make a section for each group of lenses:
         for group in self.lenses:
