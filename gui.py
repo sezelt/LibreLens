@@ -86,8 +86,30 @@ class LibreLensGUI(QMainWindow):
 
         newwidget = QWidget()
         newlayout = QVBoxLayout()
-        newlayout.setSpacing(0)
-        # newlayout.setContentsMargins(0, 0, 0, 0)
+        # newlayout.setSpacing(0)
+        # newlayout.setContentsMargins(11, 0, 11, 0)
+
+        # buttons for the overall control
+        controlrow = QHBoxLayout()
+
+        all_to_scope_button = QPushButton("<--- All")
+        all_to_scope_button.clicked.connect(self.all_to_scope_pressed)
+        controlrow.addWidget(all_to_scope_button)
+
+        selected_to_scope_button = QPushButton("<--- Selected")
+        selected_to_scope_button.clicked.connect(self.selected_to_scope_pressed)
+        controlrow.addWidget(selected_to_scope_button)
+
+        seletcted_to_register_button = QPushButton(" Selected --->")
+        seletcted_to_register_button.clicked.connect(self.selected_to_register_pressed)
+        controlrow.addWidget(seletcted_to_register_button)
+
+        all_to_register_button = QPushButton("All --->")
+        all_to_register_button.clicked.connect(self.all_to_register_pressed)
+        controlrow.addWidget(all_to_register_button)
+
+        newlayout.addLayout(controlrow)
+
         # Make a section for each group of lenses:
         for group in self.lenses:
             newlayout.addWidget(SectionLabel(group["name"]))
@@ -115,6 +137,7 @@ class LibreLensGUI(QMainWindow):
 
                 checkbox = QCheckBox()
                 checkbox.setObjectName(lenspath+"/SELECTED")
+                checkbox.setChecked(lens['selected'])
                 buttonrow.addWidget(checkbox)
 
                 # add register boxes
@@ -139,6 +162,18 @@ class LibreLensGUI(QMainWindow):
     def single_lens_to_register_pressed(self):
         sender = self.sender().objectName()
         print(f"Single lens to register pressed: {sender}")
+
+    def all_to_scope_pressed(self):
+        return
+
+    def all_to_register_pressed(self):
+        return
+
+    def selected_to_scope_pressed(self):
+        return
+
+    def selected_to_register_pressed(self):
+        return
 
     def load_definition_file(self):
         """
