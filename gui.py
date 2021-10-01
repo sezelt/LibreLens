@@ -1,7 +1,8 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QWidget
 from PyQt5.QtWidgets import QMenu, QAction, QFileDialog, QVBoxLayout, QHBoxLayout
-from PyQt5.QtWidgets import QFrame, QPushButton, QScrollArea
+from PyQt5.QtWidgets import QFrame, QPushButton, QScrollArea, QCheckBox
+from PyQt5.QtWidgets import QLineEdit
 
 # import numpy as np
 import sys
@@ -85,6 +86,8 @@ class LibreLensGUI(QMainWindow):
 
         newwidget = QWidget()
         newlayout = QVBoxLayout()
+        newlayout.setSpacing(0)
+        # newlayout.setContentsMargins(0, 0, 0, 0)
         # Make a section for each group of lenses:
         for group in self.lenses:
             newlayout.addWidget(SectionLabel(group["name"]))
@@ -109,6 +112,17 @@ class LibreLensGUI(QMainWindow):
                 to_register_button.clicked.connect(self.single_lens_to_register_pressed)
                 to_register_button.setObjectName(lenspath+"/TOREGISTER")
                 buttonrow.addWidget(to_register_button)
+
+                checkbox = QCheckBox()
+                checkbox.setObjectName(lenspath+"/SELECTED")
+                buttonrow.addWidget(checkbox)
+
+                # add register boxes
+                for i in range(len(lens['registers'])):
+                    reg = QLineEdit()
+                    reg.setObjectName(lenspath+f"/REGISTER{i}")
+                    reg.setText(str(lens['registers'][i]))
+                    buttonrow.addWidget(reg)
 
                 newlayout.addLayout(buttonrow)
 
