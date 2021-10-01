@@ -83,10 +83,10 @@ class LibreLensGUI(QMainWindow):
 
             # print(f"Lens file contains: {self.lenses}")
 
-        self.central_widget = self.centralWidget()
-        QWidget().setLayout(self.centralWidget().layout())
+        # self.central_widget = self.centralWidget()
+        # QWidget().setLayout(self.centralWidget().layout())
         newwidget = QWidget()
-        newlayout = QVBoxLayout(self.central_widget)
+        newlayout = QVBoxLayout()
         # Make a section for each group of lenses:
         for group in self.lenses:
             newlayout.addWidget(SectionLabel(group["name"]))
