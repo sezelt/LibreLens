@@ -113,7 +113,7 @@ class LibreLensGUI(QMainWindow):
 
         registerrow = QHBoxLayout()
         registerrow.addWidget(QLabel("Register:"))
-        n_registers = len(self.lenses[0]['lenses'][0]['registers'])
+        n_registers = len(self.lenses[0]["lenses"][0]["registers"])
         self.register_radio_group = QButtonGroup()
         self.register_radio_group.buttonClicked.connect(self.register_radio_toggled)
         for i in range(n_registers):
@@ -125,14 +125,13 @@ class LibreLensGUI(QMainWindow):
 
         controlarea.addLayout(registerrow)
 
-
         newlayout.addLayout(controlarea)
 
         # Make a section for each group of lenses:
         for group in self.lenses:
             newlayout.addWidget(SectionLabel(group["name"]))
 
-            for lens in group['lenses']:
+            for lens in group["lenses"]:
                 # print(f"Adding lens {lens['name']}")
 
                 # an ID for the current lens that gets attached
@@ -141,28 +140,28 @@ class LibreLensGUI(QMainWindow):
 
                 buttonrow = QHBoxLayout()
 
-                buttonrow.addWidget(QLabel(lens['name']))
+                buttonrow.addWidget(QLabel(lens["name"]))
 
                 to_scope_button = QPushButton("⬅︎")
                 to_scope_button.clicked.connect(self.single_lens_to_scope_pressed)
-                to_scope_button.setObjectName(lenspath+"/TOSCOPE")
+                to_scope_button.setObjectName(lenspath + "/TOSCOPE")
                 buttonrow.addWidget(to_scope_button)
 
                 to_register_button = QPushButton("➡︎")
                 to_register_button.clicked.connect(self.single_lens_to_register_pressed)
-                to_register_button.setObjectName(lenspath+"/TOREGISTER")
+                to_register_button.setObjectName(lenspath + "/TOREGISTER")
                 buttonrow.addWidget(to_register_button)
 
                 checkbox = QCheckBox()
-                checkbox.setObjectName(lenspath+"/SELECTED")
-                checkbox.setChecked(lens['selected'])
+                checkbox.setObjectName(lenspath + "/SELECTED")
+                checkbox.setChecked(lens["selected"])
                 buttonrow.addWidget(checkbox)
 
                 # add register boxes
-                for i in range(len(lens['registers'])):
+                for i in range(len(lens["registers"])):
                     reg = QLineEdit()
-                    reg.setObjectName(lenspath+f"/REGISTER{i}")
-                    reg.setText(str(lens['registers'][i]))
+                    reg.setObjectName(lenspath + f"/REGISTER{i}")
+                    reg.setText(str(lens["registers"][i]))
                     buttonrow.addWidget(reg)
 
                 newlayout.addLayout(buttonrow)
