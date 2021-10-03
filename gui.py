@@ -13,6 +13,14 @@ import sys
 # from pathlib import Path
 import json
 
+try:
+    import pywinauto
+
+    ONLINE = True
+except Exception as exc:
+    print("pywinauto not found... running in offline mode")
+    ONLINE = False
+
 
 class LibreLensGUI(QMainWindow):
     """
@@ -39,7 +47,9 @@ class LibreLensGUI(QMainWindow):
         # TODO: check if there is a file in argv, open directly to that file
 
         self.setup_window()
-        self.central_widget = QLabel("Please load a lens definition file...")
+        self.central_widget = QLabel(
+            "LibreLens by SE Zeltmann\nsteven.zeltmann@lbl.gov\nLoad a lens definition file to begin..."
+        )
         self.setCentralWidget(self.central_widget)
         self.show()
 
@@ -171,6 +181,23 @@ class LibreLensGUI(QMainWindow):
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll_area.setWidget(newwidget)
         self.setCentralWidget(scroll_area)
+
+    def synchronize_GUI(self):
+        """
+        All-purpose state synchronization.
+        Rather than handle user interaction with the GUI whenever
+        a value is changed, we wait until a concrete action (like
+        sending a value to TEMSpy) is called and synchronize the
+        GUI data with the internal datastructure en masse, before
+        dispacthing whatever action.
+
+        Performs the following:
+            • Writes all register values from the text boxes into
+                the "registers" field of the lenses
+            • Writes the "selected" state for each lens
+            • Dims the registers that are not active
+        """
+        return
 
     def single_lens_to_scope_pressed(self):
         sender = self.sender().objectName()
