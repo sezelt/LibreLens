@@ -2,13 +2,13 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QWidget
 from PyQt5.QtWidgets import QMenu, QAction, QFileDialog, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QFrame, QPushButton, QScrollArea, QCheckBox
-from PyQt5.QtWidgets import QLineEdit, QGroupBox, QRadioButton
+from PyQt5.QtWidgets import QLineEdit, QGroupBox, QRadioButton, QButtonGroup
 
 # import numpy as np
 import sys
 
 # import os
-import pyqtgraph as pg
+# import pyqtgraph as pg
 
 # from pathlib import Path
 import json
@@ -114,9 +114,12 @@ class LibreLensGUI(QMainWindow):
         registerrow = QHBoxLayout()
         registerrow.addWidget(QLabel("Register:"))
         n_registers = len(self.lenses[0]['lenses'][0]['registers'])
+        self.register_radio_group = QButtonGroup()
+        self.register_radio_group.buttonClicked.connect(self.register_radio_toggled)
         for i in range(n_registers):
             radio = QRadioButton(f"{i+1}")
             registerrow.addWidget(radio)
+            self.register_radio_group.addButton(radio, i)
             if i == 0:
                 radio.setChecked(True)
 
@@ -189,6 +192,9 @@ class LibreLensGUI(QMainWindow):
 
     def selected_to_register_pressed(self):
         return
+
+    def register_radio_toggled(self):
+        print(self.register_radio_group.checkedId())
 
     def load_definition_file(self):
         """
