@@ -287,9 +287,7 @@ class LibreLensGUI(QMainWindow):
         group = list(filter(lambda g: g["name"] == groupname, self.lenses))[0]
         lens = list(filter(lambda l: l["name"] == lensname, group["lenses"]))[0]
 
-        self.set_value_in_TEMSpy(
-            lens["HWND"], lens["registers"][self.current_register]
-        )
+        self.set_value_in_TEMSpy(lens["HWND"], lens["registers"][self.current_register])
 
         print(
             f"Single lens to scope pressed: {sender}, sent value {lens['registers'][self.current_register]}"
