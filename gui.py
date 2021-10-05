@@ -92,7 +92,9 @@ class LibreLensGUI(QMainWindow):
         self.edit_menu.addAction(self.discover_HWNDs_action)
 
         self.debug_action = QAction("&Dump data to console", self)
-        self.debug_action.triggered.connect(lambda: pprint.PrettyPrinter(indent=4).pprint(self.lenses))
+        self.debug_action.triggered.connect(
+            lambda: pprint.PrettyPrinter(indent=4).pprint(self.lenses)
+        )
         self.edit_menu.addAction(self.debug_action)
 
         self.sync_action = QAction("&Synchronize GUI to Internal")
@@ -423,14 +425,14 @@ class LibreLensGUI(QMainWindow):
         self.synchronize_GUI(GUI_to_internal=True)
         for group in self.lenses:
             for lens in group["lenses"]:
-                lens['selected'] = True
+                lens["selected"] = True
         self.synchronize_GUI(GUI_to_internal=False)
 
     def deselect_all_pressed(self):
         self.synchronize_GUI(GUI_to_internal=True)
         for group in self.lenses:
             for lens in group["lenses"]:
-                lens['selected'] = False
+                lens["selected"] = False
         self.synchronize_GUI(GUI_to_internal=False)
 
     def register_radio_toggled(self):
