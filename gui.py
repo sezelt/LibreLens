@@ -270,7 +270,7 @@ class LibreLensGUI(QMainWindow):
 
         group, lensname, _ = sender.split("/")
 
-        lens = filter(self.lenses['group']['lenses'], key=lambda l: l['name'] == lensname)
+        lens = filter(self.lenses['group']['lenses'], key=lambda l: l['name'] == lensname)[0]
 
         if ONLINE:
             self.set_value_in_TEMSpy(lens["HWND"], lens['registers'][self.current_register])
