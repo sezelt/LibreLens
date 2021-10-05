@@ -15,10 +15,12 @@ import random  # only used in OFFLINE mode for making up values
 import json
 
 try:
-    import win32gui, win32con
+    import win32gui
+    import win32con
 
     ONLINE = True
 except Exception as exc:
+    print(exc)
     print("pywinauto not found... running in offline mode")
     ONLINE = False
 
@@ -316,7 +318,7 @@ class LibreLensGUI(QMainWindow):
         control, which we must ignore.
 
         We have to do this because TEMSpy does not seem to assign the HWNDs
-        of its child Edit windows in any predictable way... 
+        of its child Edit windows in any predictable way...
         """
         if ONLINE and self.lenses is not None:
             # enumerate all of the children of the Outputs window
