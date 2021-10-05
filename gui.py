@@ -86,10 +86,14 @@ class LibreLensGUI(QMainWindow):
         # TODO: check if there is a file in argv, open directly to that file
 
         self.setup_window()
-        self.central_widget = QLabel(
+        layout = QVBoxLayout()
+        central_widget = QLabel(
             "LibreLens by SE Zeltmann\nsteven.zeltmann@lbl.gov\nLoad a lens definition file to begin..."
         )
-        self.setCentralWidget(self.central_widget)
+        layout.addWidget(central_widget, 0, Qt.AlignCenter)
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
         self.resize(400, 250)
         self.show()
 
