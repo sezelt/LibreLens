@@ -202,7 +202,7 @@ class LibreLensGUI(QMainWindow):
                 buttonrow = QHBoxLayout()
 
                 namelabel = QLabel(lens["name"])
-                namelabel.setMinimumWidth(20)
+                namelabel.setMinimumWidth(30)
                 buttonrow.addWidget(namelabel)
 
                 to_scope_button = QPushButton("⬅︎")
@@ -237,7 +237,7 @@ class LibreLensGUI(QMainWindow):
                     buttonrow.addWidget(reg)
                     buttonrow.addSpacing(11)
 
-                buttonrow.setContentsMargins(11,0,11,0)
+                buttonrow.setContentsMargins(11, 0, 11, 0)
                 lens_layout.addLayout(buttonrow)
 
         newlayout.addLayout(lens_layout)
@@ -446,7 +446,7 @@ class LibreLensGUI(QMainWindow):
         if filename is not None:
             print(f"User chose file: {filename}")
 
-            with open(filename[0], 'w') as f:
+            with open(filename[0], "w") as f:
                 json.dump(self.lenses, f)
 
     def display_about_window(self):
