@@ -3,14 +3,14 @@ try:
     from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QWidget
     from PyQt5.QtWidgets import QMenu, QAction, QFileDialog, QVBoxLayout, QHBoxLayout
     from PyQt5.QtWidgets import QFrame, QPushButton, QScrollArea, QCheckBox
-    from PyQt5.QtWidgets import QLineEdit, QGroupBox, QRadioButton, QButtonGroup
+    from PyQt5.QtWidgets import QLineEdit, QRadioButton, QButtonGroup, QDesktopWidget
 except ImportError:
     print("PyQt5 not available... trying PyQt4")
     from PyQt4.QtCore import Qt
     from PyQt4.QtWidgets import QApplication, QLabel, QMainWindow, QWidget
     from PyQt4.QtWidgets import QMenu, QAction, QFileDialog, QVBoxLayout, QHBoxLayout
     from PyQt4.QtWidgets import QFrame, QPushButton, QScrollArea, QCheckBox
-    from PyQt4.QtWidgets import QLineEdit, QGroupBox, QRadioButton, QButtonGroup
+    from PyQt4.QtWidgets import QLineEdit, QRadioButton, QButtonGroup, QDesktopWidget
 
 
 # import numpy as np
@@ -64,6 +64,7 @@ class LibreLensGUI(QMainWindow):
             "LibreLens by SE Zeltmann\nsteven.zeltmann@lbl.gov\nLoad a lens definition file to begin..."
         )
         self.setCentralWidget(self.central_widget)
+        self.resize(400, 250)
         self.show()
 
     def setup_window(self):
@@ -185,9 +186,11 @@ class LibreLensGUI(QMainWindow):
 
         newlayout.addLayout(controlarea)
 
+        lens_layout = QVBoxLayout()
+        lens_layout.setSpacing(0)
         # Make a section for each group of lenses:
         for group in self.lenses:
-            newlayout.addWidget(SectionLabel(group["name"]))
+            lens_layout.addWidget(SectionLabel(group["name"]))
 
             for lens in group["lenses"]:
                 # print(f"Adding lens {lens['name']}")
@@ -198,7 +201,9 @@ class LibreLensGUI(QMainWindow):
 
                 buttonrow = QHBoxLayout()
 
-                buttonrow.addWidget(QLabel(lens["name"]))
+                namelabel = QLabel(lens["name"])
+                namelabel.setMinimumWidth(20)
+                buttonrow.addWidget(namelabel)
 
                 to_scope_button = QPushButton("⬅︎")
                 to_scope_button.clicked.connect(self.single_lens_to_scope_pressed)
@@ -207,6 +212,7 @@ class LibreLensGUI(QMainWindow):
                     f"Copy {lens['name']} setting from active register to microscope."
                 )
                 buttonrow.addWidget(to_scope_button)
+                buttonrow.addSpacing(11)
 
                 to_register_button = QPushButton("➡︎")
                 to_register_button.clicked.connect(self.single_lens_to_register_pressed)
@@ -215,11 +221,13 @@ class LibreLensGUI(QMainWindow):
                     f"Copy {lens['name']} setting from microscpe to the active register. "
                 )
                 buttonrow.addWidget(to_register_button)
+                buttonrow.addSpacing(11)
 
                 checkbox = QCheckBox()
                 checkbox.setObjectName(lenspath + "/SELECTED")
                 checkbox.setChecked(lens["selected"])
                 buttonrow.addWidget(checkbox)
+                buttonrow.addSpacing(11)
 
                 # add register boxes
                 for i in range(self.n_registers):
@@ -227,14 +235,19 @@ class LibreLensGUI(QMainWindow):
                     reg.setObjectName(lenspath + f"/REGISTER{i}")
                     reg.setText(str(lens["registers"][i]))
                     buttonrow.addWidget(reg)
+                    buttonrow.addSpacing(11)
 
-                newlayout.addLayout(buttonrow)
+                buttonrow.setContentsMargins(11,0,11,0)
+                lens_layout.addLayout(buttonrow)
 
+        newlayout.addLayout(lens_layout)
         newwidget.setLayout(newlayout)
         scroll_area = QScrollArea()
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll_area.setWidget(newwidget)
         self.setCentralWidget(scroll_area)
+
+        self.resize(640, QDesktopWidget().availableGeometry(self).size().height() * 0.7)
 
         # populate the GUI with data from the lens file
         self.synchronize_GUI(GUI_to_internal=False)
