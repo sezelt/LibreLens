@@ -1,16 +1,47 @@
 try:
     from PyQt5.QtCore import Qt
-    from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QWidget
-    from PyQt5.QtWidgets import QMenu, QAction, QFileDialog, QVBoxLayout, QHBoxLayout
-    from PyQt5.QtWidgets import QFrame, QPushButton, QScrollArea, QCheckBox
-    from PyQt5.QtWidgets import QLineEdit, QRadioButton, QButtonGroup, QDesktopWidget
+    from PyQt5.QtWidgets import (
+        QApplication,
+        QLabel,
+        QMainWindow,
+        QWidget,
+        QMenu,
+        QAction,
+        QFileDialog,
+        QVBoxLayout,
+        QHBoxLayout,
+        QFrame,
+        QPushButton,
+        QScrollArea,
+        QCheckBox,
+        QLineEdit,
+        QRadioButton,
+        QButtonGroup,
+        QDesktopWidget,
+    )
 except ImportError:
     print("PyQt5 not available... trying PyQt4")
     from PyQt4.QtCore import Qt
-    from PyQt4.QtWidgets import QApplication, QLabel, QMainWindow, QWidget
-    from PyQt4.QtWidgets import QMenu, QAction, QFileDialog, QVBoxLayout, QHBoxLayout
-    from PyQt4.QtWidgets import QFrame, QPushButton, QScrollArea, QCheckBox
-    from PyQt4.QtWidgets import QLineEdit, QRadioButton, QButtonGroup, QDesktopWidget
+    from PyQt4.QtWidgets import (
+        QApplication,
+        QLabel,
+        QMainWindow,
+        QWidget,
+        QMenu,
+        QAction,
+        QFileDialog,
+        QVBoxLayout,
+        QHBoxLayout,
+        QFrame,
+        QPushButton,
+        QScrollArea,
+        QCheckBox,
+        QLineEdit,
+        QRadioButton,
+        QButtonGroup,
+        QDesktopWidget,
+    )
+
 
 import sys
 import random  # only used in OFFLINE mode for making up values
