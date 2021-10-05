@@ -469,6 +469,19 @@ class LibreLensGUI(QMainWindow):
 
     def display_about_window(self):
         print("Displaying about window...")
+        QMessageBox.information(
+            self,
+            "About LibreLens",
+            (
+                "Created by Steven Zeltmann, 2021\n"
+                "steven.zeltmann@lbl.gov\n"
+                "National Center for Electron Microscopy\n"
+                "Molecular Foundry\n"
+                "Lawrence Berkeley National Laboratory"
+            ),
+            QMessageBox.Ok,
+            QMessageBox.Ok,
+        )
 
     def discover_TEMSpy_handles(self):
         """
