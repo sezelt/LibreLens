@@ -82,7 +82,7 @@ class LibreLensGUI(QMainWindow):
         self.file_menu.addAction(self.save_action)
 
         # Edit Menu
-        self.edit_menu = QMenu("&Edit", self)
+        self.edit_menu = QMenu("&Debug", self)
         self.menu_bar.addMenu(self.edit_menu)
 
         self.discover_HWNDs_action = QAction("&Rediscover HWNDs", self)
@@ -92,6 +92,10 @@ class LibreLensGUI(QMainWindow):
         self.debug_action = QAction("&Dump data to console", self)
         self.debug_action.triggered.connect(lambda: print(self.lenses))
         self.edit_menu.addAction(self.debug_action)
+
+        self.sync_action = QAction("&Synchronize GUI")
+        self.sync_action.triggered.connect(self.synchronize_GUI)
+        self.edit_menu.addAction(self.sync_action)
 
         # Help Menu
         self.help_menu = QMenu("&Help", self)
@@ -224,7 +228,7 @@ class LibreLensGUI(QMainWindow):
         scroll_area.setWidget(newwidget)
         self.setCentralWidget(scroll_area)
 
-    def synchronize_GUI(self):
+    def synchronize_GUI(self, GUI_to_internal=True):
         """
         All-purpose state synchronization.
         Rather than handle user interaction with the GUI whenever
@@ -249,7 +253,10 @@ class LibreLensGUI(QMainWindow):
                 # get the select checkbox state
                 selectname = f"{groupname}/{lensname}/SELECTED"
                 selected = self.findChild(QCheckBox, selectname)
-                lens["selected"] = selected.isChecked()
+                if GUI_to_internal:
+                    lens["selected"] = selected.isChecked()
+                else:
+                    selected.setChecked(lens["selected"])
 
                 # get the value in each register
                 for i in range(self.n_registers):
@@ -257,7 +264,10 @@ class LibreLensGUI(QMainWindow):
 
                     register = self.findChild(QLineEdit, registername)
 
-                    lens["registers"][i] = float(register.text())
+                    if GUI_to_internal:
+                        lens["registers"][i] = float(register.text())
+                    else:
+                        register.setText(f"{lens['registers'][i]}")
 
         return
 
@@ -301,7 +311,7 @@ class LibreLensGUI(QMainWindow):
             print(f"Tried to set HWND {HWND:#x} to {value:10.15f}")
 
     def single_lens_to_scope_pressed(self):
-        self.synchronize_GUI()
+        self.synchronize_GUI(GUI_to_internal=True)
         sender = self.sender().objectName()
 
         groupname, lensname, _ = sender.split("/")
@@ -339,6 +349,13 @@ class LibreLensGUI(QMainWindow):
 
     def all_to_scope_pressed(self):
         self.synchronize_GUI()
+
+        for group in self.lenses:
+            for lens in group["lenses"]:
+                self.set_value_in_TEMSpy(
+                    lens["HWND"], lens["registers"][self.current_register]
+                )
+
         return
 
     def all_to_register_pressed(self):
