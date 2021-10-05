@@ -268,9 +268,9 @@ class LibreLensGUI(QMainWindow):
         sender = self.sender().objectName()
         print(f"Single lens to scope pressed: {sender}")
 
-        group, lens, _ = sender.split("/")
+        group, lensname, _ = sender.split("/")
 
-        lens = self.lenses[group][lens]
+        lens = filter(self.lenses['group']['lenses'], key=lambda l: l['name'] == lensname)
 
         if ONLINE:
             self.set_value_in_TEMSpy(lens["HWND"], lens['registers'][self.current_register])
