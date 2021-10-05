@@ -93,9 +93,13 @@ class LibreLensGUI(QMainWindow):
         self.debug_action.triggered.connect(lambda: print(self.lenses))
         self.edit_menu.addAction(self.debug_action)
 
-        self.sync_action = QAction("&Synchronize GUI")
-        self.sync_action.triggered.connect(self.synchronize_GUI)
+        self.sync_action = QAction("&Synchronize GUI to Internal")
+        self.sync_action.triggered.connect(lambda: self.synchronize_GUI(GUI_to_internal=True))
         self.edit_menu.addAction(self.sync_action)
+
+        self.sync_action_reverse = QAction("Synchronize Internal to &GUI")
+        self.sync_action_reverse.triggered.connect(lambda: self.synchronize_GUI(GUI_to_internal=False))
+        self.edit_menu.addAction(self.sync_action_reverse)
 
         # Help Menu
         self.help_menu = QMenu("&Help", self)
@@ -243,6 +247,8 @@ class LibreLensGUI(QMainWindow):
             • Writes the "selected" state for each lens
             ? Dims the registers that are not active
         """
+        assert type(GUI_to_internal) is bool, "GUI sync got a bad argument!"
+        # print(GUI_to_internal)
 
         for group in self.lenses:
             groupname = group["name"]
@@ -269,8 +275,6 @@ class LibreLensGUI(QMainWindow):
                     else:
                         register.setText(f"{lens['registers'][i]}")
 
-        return
-
     def get_value_from_TEMSpy(self, HWND: int) -> float:
         """
         grab the value from the TEMSpy Edit control
@@ -286,6 +290,7 @@ class LibreLensGUI(QMainWindow):
             return float(buffer[:-1])
 
         else:
+            print(f"Tried to read HWND {HWND:#x}")
             return random.random()
 
     def set_value_in_TEMSpy(self, HWND: int, value: float):
@@ -348,7 +353,7 @@ class LibreLensGUI(QMainWindow):
         print(f"Single lens to register pressed: {sender}")
 
     def all_to_scope_pressed(self):
-        self.synchronize_GUI()
+        self.synchronize_GUI(GUI_to_internal=True)
 
         for group in self.lenses:
             for lens in group["lenses"]:
@@ -356,10 +361,13 @@ class LibreLensGUI(QMainWindow):
                     lens["HWND"], lens["registers"][self.current_register]
                 )
 
-        return
-
     def all_to_register_pressed(self):
-        return
+        for group in self.lenses:
+            for lens in group["lenses"]:
+                lens["registers"][self.current_register] = self.get_value_from_TEMSpy(
+                    lens["HWND"]
+                )
+        self.synchronize_GUI(GUI_to_internal=False)
 
     def selected_to_scope_pressed(self):
         self.synchronize_GUI()
