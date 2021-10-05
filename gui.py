@@ -220,7 +220,7 @@ class LibreLensGUI(QMainWindow):
             • Writes all register values from the text boxes into
                 the "registers" field of the lenses
             • Writes the "selected" state for each lens
-            • Dims the registers that are not active
+            ? Dims the registers that are not active
         """
         return
 
@@ -264,20 +264,30 @@ class LibreLensGUI(QMainWindow):
             print(f"Tried to set {HWND} to {value:10.15f}")
 
     def single_lens_to_scope_pressed(self):
+        self.synchronize_GUI()
         sender = self.sender().objectName()
         print(f"Single lens to scope pressed: {sender}")
+
+        group, lens, _ = sender.split("/")
+
+        lens = self.lenses[group][lens]
+
+        if ONLINE:
+            self.set_value_in_TEMSpy(lens["HWND"], lens['registers'][self.current_register])
 
     def single_lens_to_register_pressed(self):
         sender = self.sender().objectName()
         print(f"Single lens to register pressed: {sender}")
 
     def all_to_scope_pressed(self):
+        self.synchronize_GUI()
         return
 
     def all_to_register_pressed(self):
         return
 
     def selected_to_scope_pressed(self):
+        self.synchronize_GUI()
         return
 
     def selected_to_register_pressed(self):
