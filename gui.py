@@ -305,6 +305,42 @@ class LibreLensGUI(QMainWindow):
     def display_about_window(self):
         print("Displaying about window...")
 
+    def discover_TEMSpy_handles(self):
+        """
+        Find the HWNDs of each lens by scanning the children of the
+        Outputs window. The leftmost Edit box is the "speed"
+        control, which we must ignore.
+
+        We have to do this because TEMSpy does not seem to assign the HWNDs
+        of its child Edit windows in any predictable way... 
+        """
+        if ONLINE and self.lenses is not None:
+            # enumerate all of the children of the Outputs window
+            # to find the Edit windows, which are text boxes
+            outputs = win32gui.FindWindow(0, "Outputs")
+            edits = []
+
+            def callback(hwnd, edits):
+                if win32gui.GetClassName(hwnd) == "Edit":
+                    edits.append((hwnd, win32gui.GetWindowRect(hwnd)[:2]))
+
+            win32gui.EnumChildWindows(outputs, callback, edits)
+
+            # Get the x position of each Edit box
+            x = [h[1][0] for h in edits]
+            x_min = min(x)
+
+            # filter out the "speed" control, which is the leftmost one
+            edits = filter(lambda h: h[1][0] > x_min, edits)
+
+            # sort the edits by their y position
+            edits = sorted(edits, key=lambda h: h[1][1])
+
+            # update the HWND field of each lens based on its vertical position
+            for group in self.lenses:
+                for lens in group["lenses"]:
+                    lens["HWND"] = edits[lens["position"]][0]
+
 
 class SectionLabel(QWidget):
     def __init__(self, section_title):

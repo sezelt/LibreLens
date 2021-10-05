@@ -3,63 +3,64 @@ import os
 import json
 
 
-def lens_to_entry(name, HWND="", registers=[0, 0, 0]):
+def lens_to_entry(name, position, registers=[0, 0, 0]):
     return {
         "name": name,
-        "HWND": HWND,
+        "HWND": "",
+        "position": position,
         "registers": registers,
         "selected": False,
     }
 
 
 lenses = [
-    ["C1", "000210EE"],
-    ["C2", "000210EC"],
-    ["C3", "000210EA"],
-    ["MC", "000210E8"],
-    ["OL", "000210E6"],
-    ["LL", "000210A8"],
-    ["DL", "000210E4"],
-    ["IL", "000210E2"],
-    ["P1", "000210E0"],
-    ["P2", "000210DE"],
+    ["C1", 0],
+    ["C2", 1],
+    ["C3", 2],
+    ["MC", 3],
+    ["OL", 4],
+    ["LL", 5],
+    ["DL", 6],
+    ["IL", 7],
+    ["P1", 8],
+    ["P2", 9],
 ]
 
 gun_deflection = [
-    ["ux", "000210DC"],
-    ["uy", "000210DA"],
-    ["lx", "000210D8"],
-    ["ly", "000210D6"],
+    ["ux", 10],
+    ["uy", 11],
+    ["lx", 12],
+    ["ly", 13],
 ]
 
 condenser_deflection = [
-    ["ux", "0002108C"],
-    ["uy", "0002108A"],
-    ["lx", "00021088"],
-    ["ly", "00021086"],
+    ["ux", 14],
+    ["uy", 15],
+    ["lx", 16],
+    ["ly", 17],
 ]
 
 beam_deflection = [
-    ["ux", "000210D4"],
-    ["uy", "000210D2"],
-    ["lx", "000210D0"],
-    ["ly", "000210CE"],
+    ["ux", 18],
+    ["uy", 19],
+    ["lx", 20],
+    ["ly", 21],
 ]
 
 image_deflection = [
-    ["ux", "000210CC"],
-    ["uy", "000210CA"],
-    ["lx", "000210C8"],
-    ["ly", "000210C6"],
+    ["ux", 22],
+    ["uy", 23],
+    ["lx", 24],
+    ["ly", 25],
 ]
 
 stigmator_control = [
-    ["Cx", "000210C4"],
-    ["Cy", "000210C2"],
-    ["Ox", "000210C0"],
-    ["Oy", "000210BE"],
-    ["Dx", "000210BC"],
-    ["Dy", "000210BA"],
+    ["Cx", 26],
+    ["Cy", 27],
+    ["Ox", 28],
+    ["Oy", 29],
+    ["Dx", 30],
+    ["Dy", 31],
 ]
 
 if __name__ == "__main__":
