@@ -142,15 +142,16 @@ class LibreLensGUI(QMainWindow):
 
         registerrow = QHBoxLayout()
         registerrow.addWidget(QLabel("Register:"))
-        n_registers = len(self.lenses[0]["lenses"][0]["registers"])
+        self.n_registers = len(self.lenses[0]["lenses"][0]["registers"])
         self.register_radio_group = QButtonGroup()
         self.register_radio_group.buttonClicked.connect(self.register_radio_toggled)
-        for i in range(n_registers):
+        for i in range(self.n_registers):
             radio = QRadioButton(f"{i+1}")
             registerrow.addWidget(radio)
             self.register_radio_group.addButton(radio, i)
             if i == 0:
                 radio.setChecked(True)
+        self.register_radio_toggled()
 
         controlarea.addLayout(registerrow)
 
@@ -193,7 +194,7 @@ class LibreLensGUI(QMainWindow):
                 buttonrow.addWidget(checkbox)
 
                 # add register boxes
-                for i in range(len(lens["registers"])):
+                for i in range(self.n_registers):
                     reg = QLineEdit()
                     reg.setObjectName(lenspath + f"/REGISTER{i}")
                     reg.setText(str(lens["registers"][i]))
@@ -222,6 +223,20 @@ class LibreLensGUI(QMainWindow):
             • Writes the "selected" state for each lens
             ? Dims the registers that are not active
         """
+
+        for group in self.lenses:
+            groupname = group["name"]
+
+            for lens in group["lenses"]:
+                lensname = lens["name"]
+
+                for i in range(self.n_registers):
+                    registername = f"{groupname}/{lensname}/REGISTER{i}"
+
+                    register = self.findChild(QLineEdit, registername)
+
+                    lens["registers"][i] = float(register.text())
+
         return
 
     def get_value_from_TEMSpy(self, HWND):
@@ -261,19 +276,24 @@ class LibreLensGUI(QMainWindow):
             win32gui.PostMessage(HWND, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
 
         else:
-            print(f"Tried to set {HWND} to {value:10.15f}")
+            print(f"Tried to set HWND {HWND} to {value:10.15f}")
 
     def single_lens_to_scope_pressed(self):
         self.synchronize_GUI()
         sender = self.sender().objectName()
-        print(f"Single lens to scope pressed: {sender}")
 
-        group, lensname, _ = sender.split("/")
+        groupname, lensname, _ = sender.split("/")
 
-        lens = filter(self.lenses['group']['lenses'], key=lambda l: l['name'] == lensname)[0]
+        group = list(filter(lambda g: g["name"] == groupname, self.lenses))[0]
+        lens = list(filter(lambda l: l["name"] == lensname, group["lenses"]))[0]
 
-        if ONLINE:
-            self.set_value_in_TEMSpy(lens["HWND"], lens['registers'][self.current_register])
+        self.set_value_in_TEMSpy(
+            lens["HWND"], lens["registers"][self.current_register]
+        )
+
+        print(
+            f"Single lens to scope pressed: {sender}, sent value {lens['registers'][self.current_register]}"
+        )
 
     def single_lens_to_register_pressed(self):
         sender = self.sender().objectName()
@@ -294,7 +314,8 @@ class LibreLensGUI(QMainWindow):
         return
 
     def register_radio_toggled(self):
-        print(self.register_radio_group.checkedId())
+        self.current_register = self.register_radio_group.checkedId()
+        print(f"selected register {self.current_register}")
 
     def load_definition_file(self):
         """

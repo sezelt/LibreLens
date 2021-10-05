@@ -6,7 +6,7 @@ import json
 def lens_to_entry(name, position, registers=[0, 0, 0]):
     return {
         "name": name,
-        "HWND": "",
+        "HWND": 0xbad0bad0,
         "position": position,
         "registers": registers,
         "selected": False,
