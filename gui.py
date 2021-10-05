@@ -12,16 +12,9 @@ except ImportError:
     from PyQt4.QtWidgets import QFrame, QPushButton, QScrollArea, QCheckBox
     from PyQt4.QtWidgets import QLineEdit, QRadioButton, QButtonGroup, QDesktopWidget
 
-
-# import numpy as np
 import sys
 import random  # only used in OFFLINE mode for making up values
 import pprint
-
-# import os
-# import pyqtgraph as pg
-
-# from pathlib import Path
 import json
 
 try:
@@ -49,7 +42,6 @@ class LibreLensGUI(QMainWindow):
         if not self.qtapp:
             self.qtapp = QApplication(argv)
 
-        # self.main_window = QWidget()
         self.setWindowTitle("LibreLens")
 
         # icon = QtGui.QIcon(str(Path(__file__).parent.absolute() / "logo.png"))
@@ -128,14 +120,10 @@ class LibreLensGUI(QMainWindow):
         with open(self.lens_file, "r") as f:
             self.lenses = json.load(f)
 
-            # print(f"Lens file contains: {self.lenses}")
-
         self.discover_TEMSpy_handles()
 
         newwidget = QWidget()
         newlayout = QVBoxLayout()
-        # newlayout.setSpacing(0)
-        # newlayout.setContentsMargins(11, 0, 11, 0)
 
         controlarea = QVBoxLayout()
 
@@ -172,6 +160,7 @@ class LibreLensGUI(QMainWindow):
 
         controlarea.addLayout(controlrow)
 
+        # buttons for (de)selecting all the checkboxes
         selectionrow = QHBoxLayout()
 
         select_all_button = QPushButton("Select All")
@@ -184,6 +173,7 @@ class LibreLensGUI(QMainWindow):
 
         controlarea.addLayout(selectionrow)
 
+        # radio buttons for picking which register is active
         registerrow = QHBoxLayout()
         registerrow.addWidget(QLabel("Register:"))
         self.n_registers = len(self.lenses[0]["lenses"][0]["registers"])
@@ -201,6 +191,8 @@ class LibreLensGUI(QMainWindow):
 
         newlayout.addLayout(controlarea)
 
+        # make a new layout with tight spacing
+        # (we'll have to add some padding manually as a result)
         lens_layout = QVBoxLayout()
         lens_layout.setSpacing(0)
         # Make a section for each group of lenses:
@@ -208,10 +200,8 @@ class LibreLensGUI(QMainWindow):
             lens_layout.addWidget(SectionLabel(group["name"]))
 
             for lens in group["lenses"]:
-                # print(f"Adding lens {lens['name']}")
-
                 # an ID for the current lens that gets attached
-                # to the buttons so they can be dispatched later
+                # to the buttons so they can be dispatched programmatically
                 lenspath = f"{group['name']}/{lens['name']}"
 
                 buttonrow = QHBoxLayout()
@@ -280,12 +270,8 @@ class LibreLensGUI(QMainWindow):
             internal dictionary
         When GUI_to_internal is False, copies data data from the
             internal dictionary to the GUI
-
-        Should be called at the BEGINNING of actions sending data to
-        the scope, and at the END of actions grabbing data from the scope
         """
         assert type(GUI_to_internal) is bool, "GUI sync got a bad argument!"
-        # print(GUI_to_internal)
 
         for group in self.lenses:
             groupname = group["name"]
@@ -293,7 +279,7 @@ class LibreLensGUI(QMainWindow):
             for lens in group["lenses"]:
                 lensname = lens["name"]
 
-                # get the select checkbox state
+                # get/set the select checkbox state
                 selectname = f"{groupname}/{lensname}/SELECTED"
                 selected = self.findChild(QCheckBox, selectname)
                 if GUI_to_internal:
@@ -301,7 +287,7 @@ class LibreLensGUI(QMainWindow):
                 else:
                     selected.setChecked(lens["selected"])
 
-                # get the value in each register
+                # get/set the value in each register
                 for i in range(self.n_registers):
                     registername = f"{groupname}/{lensname}/REGISTER{i}"
 
@@ -369,6 +355,7 @@ class LibreLensGUI(QMainWindow):
         )
 
     def single_lens_to_register_pressed(self):
+        self.synchronize_GUI(GUI_to_internal=True)
         sender = self.sender().objectName()
 
         groupname, lensname, _ = sender.split("/")
@@ -395,6 +382,7 @@ class LibreLensGUI(QMainWindow):
                 )
 
     def all_to_register_pressed(self):
+        self.synchronize_GUI(GUI_to_internal=True)
         for group in self.lenses:
             for lens in group["lenses"]:
                 lens["registers"][self.current_register] = self.get_value_from_TEMSpy(
@@ -447,6 +435,7 @@ class LibreLensGUI(QMainWindow):
     def load_definition_file(self):
         """
         Called by Qt when the user loads a definition file.
+        Calls self.setup_controls() to populate the GUI
         """
         print("Loading definition file...")
         filename = QFileDialog.getOpenFileName(
