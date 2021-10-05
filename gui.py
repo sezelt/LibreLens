@@ -18,6 +18,7 @@ try:
         QRadioButton,
         QButtonGroup,
         QDesktopWidget,
+        QMessageBox,
     )
 except ImportError:
     print("PyQt5 not available... trying PyQt4")
@@ -40,6 +41,7 @@ except ImportError:
         QRadioButton,
         QButtonGroup,
         QDesktopWidget,
+        QMessageBox,
     )
 
 
