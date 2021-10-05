@@ -73,6 +73,10 @@ class LibreLensGUI(QMainWindow):
         self.edit_menu = QMenu("&Edit", self)
         self.menu_bar.addMenu(self.edit_menu)
 
+        self.discover_HWNDs_action = QAction("&Rediscover HWNDs", self)
+        self.discover_HWNDs_action.triggered.connect(self.discover_TEMSpy_handles)
+        self.edit_menu.addAction(self.discover_HWNDs_action)
+
         # Help Menu
         self.help_menu = QMenu("&Help", self)
         self.menu_bar.addMenu(self.help_menu)
@@ -340,6 +344,9 @@ class LibreLensGUI(QMainWindow):
             for group in self.lenses:
                 for lens in group["lenses"]:
                     lens["HWND"] = edits[lens["position"]][0]
+
+        else:
+            print("Tried to discover HWNDs, but I am offline :(")
 
 
 class SectionLabel(QWidget):
