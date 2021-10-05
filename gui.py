@@ -47,6 +47,7 @@ class LibreLensGUI(QMainWindow):
         # self.qtapp.setWindowIcon(icon)
 
         self.lens_file = None
+        self.lenses = None
         # TODO: check if there is a file in argv, open directly to that file
 
         self.setup_window()
@@ -79,6 +80,10 @@ class LibreLensGUI(QMainWindow):
         self.discover_HWNDs_action.triggered.connect(self.discover_TEMSpy_handles)
         self.edit_menu.addAction(self.discover_HWNDs_action)
 
+        self.debug_action = QAction("&Dump data to console", self)
+        self.debug_action.triggered.connect(lambda: print(self.lenses))
+        self.edit_menu.addAction(self.debug_action)
+
         # Help Menu
         self.help_menu = QMenu("&Help", self)
         self.menu_bar.addMenu(self.help_menu)
@@ -99,6 +104,8 @@ class LibreLensGUI(QMainWindow):
             self.lenses = json.load(f)
 
             # print(f"Lens file contains: {self.lenses}")
+
+        self.discover_TEMSpy_handles()
 
         newwidget = QWidget()
         newlayout = QVBoxLayout()
@@ -282,7 +289,7 @@ class LibreLensGUI(QMainWindow):
             win32gui.PostMessage(HWND, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
 
         else:
-            print(f"Tried to set HWND {HWND} to {value:10.15f}")
+            print(f"Tried to set HWND {HWND:#x} to {value:10.15f}")
 
     def single_lens_to_scope_pressed(self):
         self.synchronize_GUI()
