@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QLineEdit, QGroupBox, QRadioButton, QButtonGroup
 
 # import numpy as np
 import sys
-import random # only used in OFFLINE mode for making up values
+import random  # only used in OFFLINE mode for making up values
 
 # import os
 # import pyqtgraph as pg
@@ -106,22 +106,30 @@ class LibreLensGUI(QMainWindow):
 
         all_to_scope_button = QPushButton("⬅︎ All To Scope")
         all_to_scope_button.clicked.connect(self.all_to_scope_pressed)
-        all_to_scope_button.setToolTip("Copy all lens settings from the active register to the microscope.")
+        all_to_scope_button.setToolTip(
+            "Copy all lens settings from the active register to the microscope."
+        )
         controlrow.addWidget(all_to_scope_button)
 
         selected_to_scope_button = QPushButton("Selected To Scope")
         selected_to_scope_button.clicked.connect(self.selected_to_scope_pressed)
-        selected_to_scope_button.setToolTip("Copy lens settings from the lenses with their checkbox selected to the microscope.")
+        selected_to_scope_button.setToolTip(
+            "Copy lens settings from the lenses with their checkbox selected to the microscope."
+        )
         controlrow.addWidget(selected_to_scope_button)
 
         seletcted_to_register_button = QPushButton(" Selected To Register")
         seletcted_to_register_button.clicked.connect(self.selected_to_register_pressed)
-        seletcted_to_register_button.setToolTip("Copy lens settings from the lenses with their checkbox selected from the microscope to LibreLens.")
+        seletcted_to_register_button.setToolTip(
+            "Copy lens settings from the lenses with their checkbox selected from the microscope to LibreLens."
+        )
         controlrow.addWidget(seletcted_to_register_button)
 
         all_to_register_button = QPushButton("All To Register ➡︎")
         all_to_register_button.clicked.connect(self.all_to_register_pressed)
-        all_to_register_button.setToolTip("Copy all lens settings from the microscope to the active register in LibreLens.")
+        all_to_register_button.setToolTip(
+            "Copy all lens settings from the microscope to the active register in LibreLens."
+        )
         controlrow.addWidget(all_to_register_button)
 
         controlarea.addLayout(controlrow)
@@ -160,13 +168,17 @@ class LibreLensGUI(QMainWindow):
                 to_scope_button = QPushButton("⬅︎")
                 to_scope_button.clicked.connect(self.single_lens_to_scope_pressed)
                 to_scope_button.setObjectName(lenspath + "/TOSCOPE")
-                to_scope_button.setToolTip(f"Copy {lens['name']} setting from active register to microscope.")
+                to_scope_button.setToolTip(
+                    f"Copy {lens['name']} setting from active register to microscope."
+                )
                 buttonrow.addWidget(to_scope_button)
 
                 to_register_button = QPushButton("➡︎")
                 to_register_button.clicked.connect(self.single_lens_to_register_pressed)
                 to_register_button.setObjectName(lenspath + "/TOREGISTER")
-                to_register_button.setToolTip(f"Copy {lens['name']} setting from microscpe to the active register. ")
+                to_register_button.setToolTip(
+                    f"Copy {lens['name']} setting from microscpe to the active register. "
+                )
                 buttonrow.addWidget(to_register_button)
 
                 checkbox = QCheckBox()
@@ -236,7 +248,7 @@ class LibreLensGUI(QMainWindow):
             buffer_length = len(numstring) + 1
             send_buffer = win32gui.PyMakeBuffer(buffer_length)
             send_buffer[:-1] = numstring
-            send_buffer[-1] = '\x00'
+            send_buffer[-1] = "\x00"
 
             win32gui.SendMessage(HWND, win32con.WM_SETTEXT, buffer_length, send_buffer)
 
