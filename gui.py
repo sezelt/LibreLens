@@ -94,11 +94,15 @@ class LibreLensGUI(QMainWindow):
         self.edit_menu.addAction(self.debug_action)
 
         self.sync_action = QAction("&Synchronize GUI to Internal")
-        self.sync_action.triggered.connect(lambda: self.synchronize_GUI(GUI_to_internal=True))
+        self.sync_action.triggered.connect(
+            lambda: self.synchronize_GUI(GUI_to_internal=True)
+        )
         self.edit_menu.addAction(self.sync_action)
 
         self.sync_action_reverse = QAction("Synchronize Internal to &GUI")
-        self.sync_action_reverse.triggered.connect(lambda: self.synchronize_GUI(GUI_to_internal=False))
+        self.sync_action_reverse.triggered.connect(
+            lambda: self.synchronize_GUI(GUI_to_internal=False)
+        )
         self.edit_menu.addAction(self.sync_action_reverse)
 
         # Help Menu
@@ -241,11 +245,13 @@ class LibreLensGUI(QMainWindow):
         GUI data with the internal datastructure en masse, before
         dispacthing whatever action.
 
-        Performs the following:
-            • Writes all register values from the text boxes into
-                the "registers" field of the lenses
-            • Writes the "selected" state for each lens
-            ? Dims the registers that are not active
+        When GUI_to_internal is True, copies data from the GUI into
+            internal dictionary
+        When GUI_to_internal is False, copies data data from the
+            internal dictionary to the GUI
+
+        Should be called at the BEGINNING of actions sending data to
+        the scope, and at the END of actions grabbing data from the scope
         """
         assert type(GUI_to_internal) is bool, "GUI sync got a bad argument!"
         # print(GUI_to_internal)
@@ -342,15 +348,11 @@ class LibreLensGUI(QMainWindow):
 
         newvalue = self.get_value_from_TEMSpy(lens["HWND"])
 
-        # write the value into the GUI
-        register = self.findChild(
-            QLineEdit, f"{groupname}/{lensname}/REGISTER{self.current_register}"
-        )
-        register.setText(f"{newvalue}")
-
         # write the value into the lens datastructure
         lens["registers"][self.current_register] = newvalue
         print(f"Single lens to register pressed: {sender}")
+
+        self.synchronize_GUI(GUI_to_internal=False)
 
     def all_to_scope_pressed(self):
         self.synchronize_GUI(GUI_to_internal=True)
@@ -370,11 +372,22 @@ class LibreLensGUI(QMainWindow):
         self.synchronize_GUI(GUI_to_internal=False)
 
     def selected_to_scope_pressed(self):
-        self.synchronize_GUI()
-        return
+        self.synchronize_GUI(GUI_to_internal=True)
+        for group in self.lenses:
+            for lens in group["lenses"]:
+                if lens["selected"]:
+                    self.set_value_in_TEMSpy(
+                        lens["HWND"], lens["registers"][self.current_register]
+                    )
 
     def selected_to_register_pressed(self):
-        return
+        for group in self.lenses:
+            for lens in group["lenses"]:
+                if lens["selected"]:
+                    lens["registers"][self.current_register] = self.get_value_from_TEMSpy(
+                        lens["HWND"]
+                    )
+        self.synchronize_GUI(GUI_to_internal=False)
 
     def register_radio_toggled(self):
         """
