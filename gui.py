@@ -16,6 +16,7 @@ except ImportError:
 # import numpy as np
 import sys
 import random  # only used in OFFLINE mode for making up values
+import pprint
 
 # import os
 # import pyqtgraph as pg
@@ -91,7 +92,7 @@ class LibreLensGUI(QMainWindow):
         self.edit_menu.addAction(self.discover_HWNDs_action)
 
         self.debug_action = QAction("&Dump data to console", self)
-        self.debug_action.triggered.connect(lambda: print(self.lenses))
+        self.debug_action.triggered.connect(lambda: pprint.PrettyPrinter(indent=4).pprint(self.lenses))
         self.edit_menu.addAction(self.debug_action)
 
         self.sync_action = QAction("&Synchronize GUI to Internal")
@@ -168,6 +169,18 @@ class LibreLensGUI(QMainWindow):
         controlrow.addWidget(all_to_register_button)
 
         controlarea.addLayout(controlrow)
+
+        selectionrow = QHBoxLayout()
+
+        select_all_button = QPushButton("Select All")
+        select_all_button.clicked.connect(self.select_all_pressed)
+        selectionrow.addWidget(select_all_button)
+
+        deselect_all_button = QPushButton("Deselect All")
+        deselect_all_button.clicked.connect(self.deselect_all_pressed)
+        selectionrow.addWidget(deselect_all_button)
+
+        controlarea.addLayout(selectionrow)
 
         registerrow = QHBoxLayout()
         registerrow.addWidget(QLabel("Register:"))
@@ -404,6 +417,20 @@ class LibreLensGUI(QMainWindow):
                     lens["registers"][
                         self.current_register
                     ] = self.get_value_from_TEMSpy(lens["HWND"])
+        self.synchronize_GUI(GUI_to_internal=False)
+
+    def select_all_pressed(self):
+        self.synchronize_GUI(GUI_to_internal=True)
+        for group in self.lenses:
+            for lens in group["lenses"]:
+                lens['selected'] = True
+        self.synchronize_GUI(GUI_to_internal=False)
+
+    def deselect_all_pressed(self):
+        self.synchronize_GUI(GUI_to_internal=True)
+        for group in self.lenses:
+            for lens in group["lenses"]:
+                lens['selected'] = False
         self.synchronize_GUI(GUI_to_internal=False)
 
     def register_radio_toggled(self):
