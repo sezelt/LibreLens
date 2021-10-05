@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QLineEdit, QGroupBox, QRadioButton, QButtonGroup
 
 # import numpy as np
 import sys
+import random # only used in OFFLINE mode for making up values
 
 # import os
 # import pyqtgraph as pg
@@ -14,7 +15,7 @@ import sys
 import json
 
 try:
-    import pywinauto
+    import win32gui, win32con
 
     ONLINE = True
 except Exception as exc:
@@ -204,6 +205,45 @@ class LibreLensGUI(QMainWindow):
             • Dims the registers that are not active
         """
         return
+
+    def get_value_from_TEMSpy(self, HWND):
+        """
+        grab the value from the TEMSpy Edit control
+        referred to by the handle HWND
+        """
+        if ONLINE:
+            buffer_length = (
+                win32gui.SendMessage(HWND, win32con.WM_GETTEXTLENGTH, 0, 0) + 1
+            )
+            buffer = win32gui.PyMakeBuffer(buffer_length)
+            win32gui.SendMessage(HWND, win32con.VM_GETTEXT, buffer_length, buffer)
+
+            return float(buffer[:-1])
+
+        else:
+            return random.random()
+
+    def set_value_in_TEMSpy(self, HWND, value):
+        """
+        set the value in the TEMSpy Edit control
+        referred to by the handle HWND.
+        Operates by setting the text in the control then
+        simulating a press of the Return key in that Edit
+        """
+        if ONLINE:
+            # format the number to a string:
+            numstring = f"{value:10.15f}"
+            buffer_length = len(numstring) + 1
+            send_buffer = win32gui.PyMakeBuffer(buffer_length)
+            send_buffer[:-1] = numstring
+            send_buffer[-1] = '\x00'
+
+            win32gui.SendMessage(HWND, win32con.WM_SETTEXT, buffer_length, send_buffer)
+
+            win32gui.PostMessage(HWND, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
+
+        else:
+            print(f"Tried to set {HWND} to {value:10.15f}")
 
     def single_lens_to_scope_pressed(self):
         sender = self.sender().objectName()
