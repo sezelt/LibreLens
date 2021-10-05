@@ -236,6 +236,9 @@ class LibreLensGUI(QMainWindow):
         scroll_area.setWidget(newwidget)
         self.setCentralWidget(scroll_area)
 
+        # populate the GUI with data from the lens file
+        self.synchronize_GUI(GUI_to_internal=False)
+
     def synchronize_GUI(self, GUI_to_internal=True):
         """
         All-purpose state synchronization.
@@ -381,12 +384,13 @@ class LibreLensGUI(QMainWindow):
                     )
 
     def selected_to_register_pressed(self):
+        self.synchronize_GUI(GUI_to_internal=True)
         for group in self.lenses:
             for lens in group["lenses"]:
                 if lens["selected"]:
-                    lens["registers"][self.current_register] = self.get_value_from_TEMSpy(
-                        lens["HWND"]
-                    )
+                    lens["registers"][
+                        self.current_register
+                    ] = self.get_value_from_TEMSpy(lens["HWND"])
         self.synchronize_GUI(GUI_to_internal=False)
 
     def register_radio_toggled(self):
@@ -419,6 +423,18 @@ class LibreLensGUI(QMainWindow):
 
     def save_definition_file(self):
         print("Saving definition file...")
+        filename = QFileDialog.getSaveFileName(
+            self,
+            "Save Lens Definition File",
+            self.lens_file,
+            "LibreLens Definition Files (*.json *.lens)",
+        )
+
+        if filename is not None:
+            print(f"User chose file: {filename}")
+
+            with open(filename[0], 'w') as f:
+                json.dump(self.lenses, f)
 
     def display_about_window(self):
         print("Displaying about window...")
