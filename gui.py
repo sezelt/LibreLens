@@ -230,6 +230,12 @@ class LibreLensGUI(QMainWindow):
             for lens in group["lenses"]:
                 lensname = lens["name"]
 
+                # get the select checkbox state
+                selectname = f"{groupname}/{lensname}/SELECTED"
+                selected = self.findChild(QCheckBox, selectname)
+                lens["selected"] = selected.isChecked()
+
+                # get the value in each register
                 for i in range(self.n_registers):
                     registername = f"{groupname}/{lensname}/REGISTER{i}"
 
@@ -239,7 +245,7 @@ class LibreLensGUI(QMainWindow):
 
         return
 
-    def get_value_from_TEMSpy(self, HWND):
+    def get_value_from_TEMSpy(self, HWND: int) -> float:
         """
         grab the value from the TEMSpy Edit control
         referred to by the handle HWND
@@ -256,7 +262,7 @@ class LibreLensGUI(QMainWindow):
         else:
             return random.random()
 
-    def set_value_in_TEMSpy(self, HWND, value):
+    def set_value_in_TEMSpy(self, HWND: int, value: float):
         """
         set the value in the TEMSpy Edit control
         referred to by the handle HWND.
@@ -284,6 +290,7 @@ class LibreLensGUI(QMainWindow):
 
         groupname, lensname, _ = sender.split("/")
 
+        # get the lens that matches the sender
         group = list(filter(lambda g: g["name"] == groupname, self.lenses))[0]
         lens = list(filter(lambda l: l["name"] == lensname, group["lenses"]))[0]
 
@@ -295,6 +302,23 @@ class LibreLensGUI(QMainWindow):
 
     def single_lens_to_register_pressed(self):
         sender = self.sender().objectName()
+
+        groupname, lensname, _ = sender.split("/")
+
+        # get the lens that matches the sender
+        group = list(filter(lambda g: g["name"] == groupname, self.lenses))[0]
+        lens = list(filter(lambda l: l["name"] == lensname, group["lenses"]))[0]
+
+        newvalue = self.get_value_from_TEMSpy(lens["HWND"])
+
+        # write the value into the GUI
+        register = self.findChild(
+            QLineEdit, f"{groupname}/{lensname}/REGISTER{self.current_register}"
+        )
+        register.setText(f"{newvalue}")
+
+        # write the value into the lens datastructure
+        lens["registers"][self.current_register] = newvalue
         print(f"Single lens to register pressed: {sender}")
 
     def all_to_scope_pressed(self):
@@ -312,6 +336,11 @@ class LibreLensGUI(QMainWindow):
         return
 
     def register_radio_toggled(self):
+        """
+        This is handled separately from the synchronize_GUI
+        function because it should react immediately, so that
+        we can do style updates based on it
+        """
         self.current_register = self.register_radio_group.checkedId()
         print(f"selected register {self.current_register}")
 
