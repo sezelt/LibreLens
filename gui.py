@@ -88,7 +88,13 @@ class LibreLensGUI(QMainWindow):
         self.setup_window()
         layout = QVBoxLayout()
         central_widget = QLabel(
-            "LibreLens by SE Zeltmann\nsteven.zeltmann@lbl.gov\nLoad a lens definition file to begin..."
+            (
+                "LibreLens by SE Zeltmann\n"
+                "steven.zeltmann@lbl.gov\n"
+                "\n"
+                "Make sure the TEMSpy Outputs pane is open.\n"
+                "Then load a lens definition file to begin..."
+            )
         )
         layout.addWidget(central_widget, 0, Qt.AlignCenter)
         widget = QWidget()
