@@ -383,8 +383,8 @@ class LibreLensGUI(QMainWindow):
         self.synchronize_GUI(GUI_to_internal=True)
 
         for group in self.lenses:
-            for lens in group['lenses']:
-                lens['registers'][self.current_register] = 0.0
+            for lens in group["lenses"]:
+                lens["registers"][self.current_register] = 0.0
 
         self.synchronize_GUI(GUI_to_internal=False)
 
@@ -494,7 +494,7 @@ class LibreLensGUI(QMainWindow):
             "",
             "LibreLens Definition Files (*.json *.lens)",
         )
-        if filename is not None:
+        if filename is not None and len(filename[0]) > 0:
             print(f"User chose file: {filename}")
             self.lens_file = filename[0]
             self.setup_controls()
@@ -512,7 +512,7 @@ class LibreLensGUI(QMainWindow):
             "LibreLens Definition Files (*.json *.lens)",
         )
 
-        if filename is not None:
+        if filename is not None and len(filename[0]) > 0:
             print(f"User chose file: {filename}")
 
             with open(filename[0], "w") as f:
