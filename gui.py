@@ -515,7 +515,7 @@ class LibreLensGUI(QMainWindow):
             self,
             "Save Lens Definition File",
             self.lens_file,
-            "LibreLens Definition Files (*.json *.lens)",
+            "LibreLens Definition Files (*.lens *.json)",
         )
 
         if filename is not None and len(filename[0]) > 0:
