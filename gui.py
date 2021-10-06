@@ -588,7 +588,6 @@ class SectionLabel(QWidget):
         line_right.setLineWidth(1)
 
         label = QLabel(section_title)
-        # label.setFont(sectionFont)
 
         layout = QHBoxLayout()
         layout.addWidget(line_left)
