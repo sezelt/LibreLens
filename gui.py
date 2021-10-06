@@ -208,6 +208,10 @@ class LibreLensGUI(QMainWindow):
         deselect_all_button.clicked.connect(self.deselect_all_pressed)
         selectionrow.addWidget(deselect_all_button)
 
+        zero_all_button = QPushButton("Zero Register")
+        zero_all_button.clicked.connect(self.zero_register_pressed)
+        selectionrow.addWidget(zero_all_button)
+
         controlarea.addLayout(selectionrow)
 
         # radio buttons for picking which register is active
@@ -351,7 +355,7 @@ class LibreLensGUI(QMainWindow):
 
         else:
             print(f"Tried to read HWND {HWND:#x}")
-            return random.random()
+            return float(f"{random.random():10.6f}")
 
     def set_value_in_TEMSpy(self, HWND: int, value: float):
         """
@@ -374,6 +378,15 @@ class LibreLensGUI(QMainWindow):
 
         else:
             print(f"Tried to set HWND {HWND:#x} to {value:10.15f}")
+
+    def zero_register_pressed(self):
+        self.synchronize_GUI(GUI_to_internal=True)
+
+        for group in self.lenses:
+            for lens in group['lenses']:
+                lens['registers'][self.current_register] = 0.0
+
+        self.synchronize_GUI(GUI_to_internal=False)
 
     def single_lens_to_scope_pressed(self):
         self.synchronize_GUI(GUI_to_internal=True)
@@ -490,6 +503,7 @@ class LibreLensGUI(QMainWindow):
             self.lens_file = None
 
     def save_definition_file(self):
+        self.synchronize_GUI(GUI_to_internal=True)
         print("Saving definition file...")
         filename = QFileDialog.getSaveFileName(
             self,
