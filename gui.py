@@ -236,6 +236,7 @@ class LibreLensGUI(QMainWindow):
         # (we'll have to add some padding manually as a result)
         lens_layout = QVBoxLayout()
         lens_layout.setSpacing(0)
+        lens_layout.setContentsMargins(11, 0, 11, 0)
         # Make a section for each group of lenses:
         for group in self.lenses:
             lens_layout.addWidget(SectionLabel(group["name"]))
@@ -283,7 +284,6 @@ class LibreLensGUI(QMainWindow):
                     buttonrow.addWidget(reg)
                     buttonrow.addSpacing(11)
 
-                buttonrow.setContentsMargins(11, 0, 11, 0)
                 lens_layout.addLayout(buttonrow)
 
         newlayout.addLayout(lens_layout)
