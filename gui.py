@@ -351,13 +351,13 @@ class LibreLensGUI(QMainWindow):
         referred to by the handle HWND
         """
         if ONLINE:
+            print(f"Reading HWND {HWND:#x}")
             buffer_length = (
                 win32gui.SendMessage(HWND, win32con.WM_GETTEXTLENGTH, 0, 0) + 1
-            )
-            buffer = win32gui.PyMakeBuffer(buffer_length)
-            win32gui.SendMessage(HWND, win32con.VM_GETTEXT, buffer_length, buffer)
-
-            return float(buffer[:-1])
+            ) * 2 # Windows 7 seems to use UTF-16 encoding, so double the num of bytes
+            buf = win32gui.PyMakeBuffer(buffer_length)
+            win32gui.SendMessage(HWND, win32con.WM_GETTEXT, buffer_length//2, buf) # this takes number of characters as an argument
+            return float(bytes(buf[:-2]).decode("utf-16"))
 
         else:
             print(f"Tried to read HWND {HWND:#x}")
@@ -372,16 +372,21 @@ class LibreLensGUI(QMainWindow):
         """
         if ONLINE:
             # format the number to a string:
-            numstring = f"{value:10.15f}"
-            buffer_length = len(numstring) + 1
+            numstring = f"{value:2.9f}"
+            buffer_length = (len(numstring) + 1) * 2
             send_buffer = win32gui.PyMakeBuffer(buffer_length)
-            send_buffer[:-1] = numstring
-            send_buffer[-1] = "\x00"
+            # python prepends 0xFF 0xFE, which identifies the byte
+            # order of the string, but TEMSpy doesn't like this
+            # so we have to nuke it
+            send_buffer[:-2] = bytes(numstring, "utf-16")[2:]
+            send_buffer[-2:] = b"\x00\x00"
 
-            win32gui.SendMessage(HWND, win32con.WM_SETTEXT, buffer_length, send_buffer)
-
+            # this buffer length doesn't seem to matter
+            win32gui.SendMessage(HWND, win32con.WM_SETTEXT, 0, send_buffer)
+            # win32gui.SetForegroundWindow(HWND)
             win32gui.PostMessage(HWND, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
 
+            print(f"Set HWND {HWND:#x} to {numstring}")
         else:
             print(f"Tried to set HWND {HWND:#x} to {value:10.15f}")
 
