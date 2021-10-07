@@ -354,9 +354,11 @@ class LibreLensGUI(QMainWindow):
             print(f"Reading HWND {HWND:#x}")
             buffer_length = (
                 win32gui.SendMessage(HWND, win32con.WM_GETTEXTLENGTH, 0, 0) + 1
-            ) * 2 # Windows 7 seems to use UTF-16 encoding, so double the num of bytes
+            ) * 2  # Windows 7 seems to use UTF-16 encoding, so double the num of bytes
             buf = win32gui.PyMakeBuffer(buffer_length)
-            win32gui.SendMessage(HWND, win32con.WM_GETTEXT, buffer_length//2, buf) # this takes number of characters as an argument
+            win32gui.SendMessage(
+                HWND, win32con.WM_GETTEXT, buffer_length // 2, buf
+            )  # this takes number of characters as an argument
             return float(bytes(buf[:-2]).decode("utf-16"))
 
         else:
