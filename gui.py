@@ -187,7 +187,7 @@ class LibreLensGUI(QMainWindow):
         )
         controlrow.addWidget(selected_to_scope_button)
 
-        seletcted_to_register_button = QPushButton(" Selected To Register")
+        seletcted_to_register_button = QPushButton("Selected To Register")
         seletcted_to_register_button.clicked.connect(self.selected_to_register_pressed)
         seletcted_to_register_button.setToolTip(
             "Copy lens settings from the lenses with their checkbox selected from the microscope to LibreLens."
