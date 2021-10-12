@@ -1,0 +1,17 @@
+To use LibreLens on ThemIS:
+
+1) Activate the Python environment:
+	- Open a Command Prompt
+	- Navigate to T:\Zeltmann
+	- Activate the environment with:
+		pythemis\Scripts\activate.bat
+2) Open TEMSpy Outputs pane:
+	Windows Key ->  tstmdloptics -> Enter
+	Dialogs > Outputs
+
+3) Launch GUI:
+	python LibreLens\gui.py
+
+4) Load Lens Definition File
+	File > Load Definition File...
+	Choose "lens_definition_file.lens" for defaults
