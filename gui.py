@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 try:
     from PyQt5.QtCore import Qt
     from PyQt5.QtWidgets import (
