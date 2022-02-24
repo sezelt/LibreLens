@@ -22,6 +22,7 @@ try:
         QDesktopWidget,
         QMessageBox,
     )
+
     QT_VERSION = 5
 except ImportError:
     print("PyQt5 not available... trying PyQt4")
@@ -46,6 +47,7 @@ except ImportError:
         QDesktopWidget,
         QMessageBox,
     )
+
     QT_VERSION = 4
 
 
@@ -407,9 +409,9 @@ class LibreLensGUI(QMainWindow):
             else:
                 # format the number to a string:
                 numstring = f"{value:2.9f}"
-                buffer_length = (len(numstring) + 1)
+                buffer_length = len(numstring) + 1
                 send_buffer = win32gui.PyMakeBuffer(buffer_length)
-                
+
                 send_buffer[:-1] = bytes(numstring, "utf-8")
                 send_buffer[-1] = b"\x00"
 
